@@ -146,11 +146,11 @@ export const WebglBG = (props) => {
     width = window.innerWidth;
     height = window.innerHeight;
     camera.aspect = width / height;
-    if (location.pathname === '/About') {
+    if (pathRef.current === 1) {
+      camera.position.set(0, 0, width / 2);
+    } else {
       camera.position.set(0, 0, width / 2 * -1);
       camera.rotation.y = -1.5;
-    } else {
-      camera.position.set(0, 0, width / 2);
     }
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
