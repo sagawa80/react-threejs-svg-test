@@ -6,7 +6,6 @@ import ObjLoader from './ObjLoader';
 import * as THREE from "three";
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { gsap } from "gsap";
-//import { NoToneMapping } from 'three';
 
 export const WebglBG = (props) => {
 
@@ -24,7 +23,6 @@ export const WebglBG = (props) => {
   let camera;
 
   let renderer;
-  //let box;
   let city;
 
   let width = window.innerWidth;
@@ -69,13 +67,6 @@ export const WebglBG = (props) => {
     renderer.setSize(width, height);
     renderer.setClearColor(0xffffff, 1.0);
 
-    //container.appendChild(renderer.domElement);
-
-    //const geometry = new THREE.BoxGeometry(400, 400, 400);
-    //const material = new THREE.MeshNormalMaterial();
-    //box = new THREE.Mesh(geometry, material);
-    //scene.add(box);
-
     const wf_material = new THREE.MeshBasicMaterial({ color: 0xa0a0a0, wireframe: true });
 
     const objLoader = new OBJLoader();
@@ -88,13 +79,12 @@ export const WebglBG = (props) => {
           }
         });
         city = object.clone();
-        //city.position.set(width * 0.25, width * 0.15 * -1, width * 2 * -1);
         city.position.set(width / 5, height / 5 * -1, width / 3);
         scene.add(city);
       },
       function (xhr) {
         console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-        setPercent(xhr.loaded / xhr.total * 100);
+        setPercent(Math.trunc(xhr.loaded / xhr.total * 100));
       },
       function (error) {
         console.log('An error happened');
@@ -107,49 +97,48 @@ export const WebglBG = (props) => {
 
   };
 
-  function gotoAbout() {
+  function gotoTop() {
     move1Ref.current = 0;
     let timelineBox = gsap.timeline({
       paused: false
     });
-    timelineBox
-      .to(camera.position, { z: width / 2, duration: 2, ease: "slow(0.7, 0.7, false)" })
-      .to(camera.rotation, {
-        y: 0,
-        duration: 2,
-        delay: 0,
-        ease: "slow(0.4, 0.4, false)",
-      }, "-=2")
-      .call(gotoAboutEnd);
-    ;
-  }
-
-  function gotoTop() {
-    move2Ref.current = 0;
-    let timelineBox2 = gsap.timeline({
-      paused: false
-    });
-    timelineBox2.to(camera.rotation, {
-      y: -1.5,
+    timelineBox.to(camera.rotation, {
+      y: 0,
       duration: 2,
       delay: 0,
       ease: "slow(0.4, 0.4, false)",
     })
-      .to(camera.position, { z: width / 2 * -1, duration: 2, ease: "slow(0.7, 0.7, false)" }, "-=2")
+    .to(camera.position, { z: width / 2, duration: 2, ease: "slow(0.7, 0.7, false)" }, "-=2")
     .call(gotoTopEnd);
   }
 
-  function gotoAboutEnd() {
+  function gotoTopEnd() {
     move1Ref.current = 0;
     move2Ref.current = 100;
-    //console.log("ani1end");
+    //console.log("ani2end");
     onHomeEndHandler();
   }
 
-  function gotoTopEnd() {
+  function gotoAbout() {
+    move2Ref.current = 0;
+    let timelineBox = gsap.timeline({
+      paused: false
+    });
+    timelineBox
+      .to(camera.position, { z: width / 2 * -1, duration: 2, ease: "slow(0.7, 0.7, false)" })
+      .to(camera.rotation, {
+        y: -1.5,
+        duration: 2,
+        delay: 0,
+        ease: "slow(0.4, 0.4, false)",
+      }, "-=2")
+    .call(gotoAboutEnd);
+  }
+
+  function gotoAboutEnd() {
     move1Ref.current = 100;
     move2Ref.current = 0;
-    //console.log("ani2end");
+    //console.log("ani1end");
     onAboutEndHandler();
   }
 
@@ -171,11 +160,11 @@ export const WebglBG = (props) => {
     if (pathRef.current !== undefined) {
       if (pathRef.current === 1) {
         if (move1Ref.current > 0) {
-          gotoAbout();
+          gotoTop();
         }
       } else {
         if (move2Ref.current > 0) {
-          gotoTop();
+          gotoAbout();
         }
       }
     }
